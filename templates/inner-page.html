@@ -1802,8 +1802,16 @@ section {
                 <input type="radio" name="gender" id="option1" value="male"> Male <br>
                 <input type="radio" name="gender" id="option2" value="female"> Female <br>
                 </p>
-                <button class="button-4" role="button">Capture</button>
+                <button  role="button">Capture</button>
             </form>
+              <div id="loading-section">
+        Loading...
+              </div>
+
+    <div id="dynamic-section" style="display:none;">
+        <button class="button-4" id="capture-button">Capture</button>
+        <canvas id="captured-image" style="display:none;"></canvas>
+    </div>
 
 
             <!-- <form method="POST", action="{{url_for('home')}}">
@@ -1856,6 +1864,63 @@ section {
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
 
-</body>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      fetch('/backend-endpoint')
+          .then(response => response.json())
+          .then(data => {
+              document.getElementById('loading-section').style.display = 'none';
+              document.getElementById('dynamic-section').style.display = 'block';
+
+              document.getElementById('capture-button').addEventListener('click', function() {
+                  captureImage();
+              });
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+  });
+
+  function captureImage() {
+      const video = document.createElement('video');
+      const canvas = document.getElementById('captured-image');
+      const context = canvas.getContext('2d');
+
+      navigator.mediaDevices.getUserMedia({ video: true })
+          .then(stream => {
+              video.srcObject = stream;
+              video.play();
+
+              setTimeout(() => {
+                  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                  const imageData = canvas.toDataURL('image/jpeg');
+
+                  // Send the captured image data to the backend
+                  fetch('/process-image', {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({ image: imageData }),
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                      console.log('Image processed:', data);
+                  })
+                  .catch(error => {
+                      console.error('Error processing image:', error);
+                  });
+              }, 1000);
+          })
+          .catch(error => {
+              console.error('Error accessing camera:', error);
+          });
+  }
+</script>
+
+  </body>
 
 </html>
+
