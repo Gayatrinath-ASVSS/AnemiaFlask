@@ -285,7 +285,6 @@ def bar():
 
 
 def main():
-    capture_and_save_eye_image()
     sharp()
     laplacian()
     sobel()
