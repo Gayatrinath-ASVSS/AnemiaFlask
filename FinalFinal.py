@@ -15,8 +15,6 @@ import matplotlib.image as mpimg
 
 
 
-
-
 def capture_and_save_eye_image():
     # Open the camera (default camera, 0)
     cap = cv2.VideoCapture(0)
@@ -84,25 +82,47 @@ def sharp():
     img = Image.open('static/images/eye.jpg') #C:\\Users\\PC\\Desktop\\anemia-detection-with-machine-learning-main\\
     sharpened_img = img.filter(ImageFilter.SHARPEN) 
     sharpened_img.save("static/images/sharp.jpg")
+    img.close()
     return
 def laplacian():
+    image_path = 'static/images/eye.jpg'
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
-    image = cv2.imread('static/images/eye.jpg', cv2.IMREAD_GRAYSCALE)
+    # Apply the Laplacian filter
+    laplacian = cv2.Laplacian(image, cv2.CV_64F)
 
-        # Apply Laplacian filter
-    laplacian_image = cv2.Laplacian(image, cv2.CV_64F)
+    # Convert the result to uint8 (8-bit) and normalize for display
+    laplacian_display = cv2.convertScaleAbs(laplacian)
 
-        # Create a subplot
+    # Display the original and filtered images
+    plt.figure(figsize=(10, 5))
     plt.subplot(1, 2, 1)
     plt.imshow(image, cmap='gray')
     plt.title('Original Image')
-
     plt.subplot(1, 2, 2)
-    plt.imshow(laplacian_image, cmap='gray')
-    plt.title('Laplacian Filter')
-
-        # Save the subplot
+    plt.imshow(laplacian_display, cmap='gray')
+    plt.title('Laplacian Filtered Image')
     plt.savefig('static/images/laplacian.jpg')
+    # plt.show()
+
+
+    # image = cv2.imread('static/images/eye.jpg', cv2.IMREAD_GRAYSCALE)
+
+    #     # Apply Laplacian filter
+    # laplacian_image = cv2.Laplacian(image, cv2.CV_64F)
+
+    #     # Create a subplot
+    # # plt.subplot(1, 2, 1)
+    # # plt.imshow(image, cmap='gray')
+    # # plt.title('Original Image')
+    
+    # plt.subplot(1, 2, 2)
+    # # plt.imshow(laplacian_image, cmap='gray')
+    # plt.title('Laplacian Filter')
+    
+    #     # Save the subplot
+    # plt.savefig('static/images/laplacian.jpg')
+    # plt.close()
 
 
     # img = Image.open('static/eye.jpg')
@@ -129,12 +149,15 @@ def sobel():
     cv2.imwrite('static/images/Gauss.jpg', blurred_image)
     # convolute with sobel kernels
     sobelx = cv2.Sobel(img,cv2.CV_64F,1,0,ksize=5)  # x
+    cv2.imwrite('static/images/sobelx.jpg', sobelx)
     sobely = cv2.Sobel(img,cv2.CV_64F,0,1,ksize=5)  # y
+    cv2.imwrite('static/images/sobely.jpg', sobely)
     #Plotting images
-    plt.savefig('static/images/sobelx.jpg')
-    plt.imshow(sobelx)
-    plt.savefig('static/images/sobely.jpg')
-    plt.imshow(sobely)
+    # plt.savefig('static/images/sobelx.jpg')
+    # plt.imshow(sobelx)
+    # plt.savefig('static/images/sobely.jpg')
+    # plt.imshow(sobely)
+    plt.close()
     
     return
 
@@ -146,7 +169,8 @@ def histo():
     plt.xlabel('Pixel Value')
     plt.ylabel('Frequency')
     plt.savefig('static/images/histo.jpg')
-    plt.show()
+    # plt.show()
+    plt.close()
     return
 
 def contour():
@@ -159,7 +183,8 @@ def contour():
     plt.subplot(121), plt.imshow(image, cmap='gray'), plt.title('Original Image')
     plt.subplot(122), plt.imshow(edges, cmap='gray'), plt.title('Edge Detection')
     plt.savefig('static/images/contour.jpg')
-    plt.show()
+    # plt.show()
+    plt.close()
     return
 
 def cmv():
@@ -173,7 +198,8 @@ def cmv():
     plt.subplot(132), plt.imshow(image_rgb, cmap='viridis'), plt.title('Viridis Map')
     plt.subplot(133), plt.imshow(image_rgb, cmap='jet'), plt.title('Jet Map')
     plt.savefig('static/images/cmv.jpg')
-    plt.show()
+    # plt.show()
+    plt.close()
     return
 
 def scatter():
@@ -188,7 +214,8 @@ def scatter():
     plt.scatter(x, y, color='red', marker='o')  # You can customize the color and marker type
     plt.savefig('static/images/scatter.jpg')
     # Display the plot
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def line():
     img = mpimg.imread('static/images/eye.jpg')
@@ -198,26 +225,33 @@ def line():
     y = np.sin(x) * img.shape[0] / 4 + img.shape[0] / 2  # Generate corresponding y-coordinates
 
     # Create a line plot on the image
-    plt.imshow(img)
+    # plt.imshow(img)
     plt.plot(x, y, color='blue', linewidth=2)  # You can customize the color and linewidth
     plt.savefig('static/images/line.jpg')
     # Display the plot
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def bar():
-    img = mpimg.imread('static/images/eye.jpg')
+    image_path = 'static/images/eye.jpg'
+    image = Image.open(image_path)
 
-# Create some sample data for the bar plot
-    categories = ['A', ' B', ' C', ' D']
-    values = [15, 30, 20, 25]
+    # Convert the image to a NumPy array
+    image_array = np.array(image)
 
-    # Create a bar plot on the image
-    plt.imshow(img)
-    plt.bar(categories, values, color='green')  # You can customize the color
+    # Calculate the average intensity along each channel (assuming RGB)
+    average_intensity = np.mean(image_array, axis=(0, 1))
+
+    # Bar plot
+    channels = ['Red', 'Green', 'Blue']
+    plt.bar(channels, average_intensity, color=['red', 'green', 'blue'])
+    plt.title('Average Intensity per Channel')
+    plt.xlabel('Channels')
+    plt.ylabel('Average Intensity')
     plt.savefig('static/images/bar.jpg')
-    # Display the plot
-    plt.show()
+    plt.close()
 
+   
 
 
 
