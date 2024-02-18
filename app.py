@@ -52,7 +52,7 @@ def process_image():
             for (ex, ey, ew, eh) in eyes:
                 # Save each detected eye as eye1.jpg
                 eye_img = img[y + ey:y + ey + eh, x + ex:x + ex + ew]
-                cv2.imwrite('static/images/eye1.jpg', eye_img)
+                cv2.imwrite('static/images/eye.jpg', eye_img)
 
         return jsonify({'status': 'success', 'message': 'Image processed'})
     except Exception as e:
