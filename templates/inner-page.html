@@ -1802,16 +1802,14 @@ section {
                 <input type="radio" name="gender" id="option1" value="male"> Male <br>
                 <input type="radio" name="gender" id="option2" value="female"> Female <br>
                 </p>
-                <button  role="button">Capture</button>
+                 <div id="dynamic-section" style="display:none;">
+                    <button class="button-4" id="capture-button">Capture</button>
+                    <canvas id="captured-image" style="display:none;"></canvas>
+                </div>
             </form>
-              <div id="loading-section">
-        Loading...
-              </div>
+              
 
-    <div id="dynamic-section" style="display:none;">
-        <button class="button-4" id="capture-button">Capture</button>
-        <canvas id="captured-image" style="display:none;"></canvas>
-    </div>
+   
 
 
             <!-- <form method="POST", action="{{url_for('home')}}">
