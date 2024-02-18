@@ -14,50 +14,6 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 
-
-def capture_and_save_eye_image():
-    # Open the camera (default camera, 0)
-    cap = cv2.VideoCapture(0)
-
-    # Check if the camera is opened successfully
-    if not cap.isOpened():
-        print("Error: Could not open camera.")
-        return
-
-    while True:
-        # Read a frame from the camera
-        ret, frame = cap.read()
-
-        # Display the frame
-        cv2.imshow("Capture", frame)
-        cv2.imwrite('static/images/face.jpg', frame)
-        # Press 'q' to exit the loop and capture an image
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    # Release the camera
-    cap.release()
-
-    # Destroy all OpenCV windows
-    cv2.destroyAllWindows()
-
-    # Convert the captured frame to grayscale
-    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    # Use a cascade classifier to detect eyes
-    eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
-    eyes = eye_cascade.detectMultiScale(gray_frame, scaleFactor=1.3, minNeighbors=5)
-    # Check if eyes are detected
-    if len(eyes):
-        # Extract coordinates of the two eyes
-        (ex1, ey1, ew1, eh1) = eyes[0]
-        # Crop and save the region containing the eyes
-        eye1 = frame[ey1:ey1 + eh1, ex1:ex1 + ew1]
-        cv2.imwrite("static/images/eye.jpg", eye1)
-        print("Eye images saved successfully.")
-    else:
-        print("Error: Could not detect both eyes.")
-
 def rgbtry():    # Open the image
    img = Image.open('static/images/eye.jpg') #C:\\Users\\PC\\Desktop\\anemia-detection-with-machine-learning-main\\
 
